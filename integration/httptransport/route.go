@@ -8,7 +8,7 @@ import (
 	"net/http"
 	"strconv"
 
-	log "../../mylog"
+	log "github.com/luciferdocker/go/mylog"
 )
 
 var posts []Post
