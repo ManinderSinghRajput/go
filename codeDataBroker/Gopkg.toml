@@ -26,5 +26,5 @@
   version = "1.7.3"
 
 [[constraint]]
-  branch = "master"
-  name = "github.com/luciferdocker/go"
+  name = "github.com/segmentio/kafka-go"
+  version = "0.2.5"

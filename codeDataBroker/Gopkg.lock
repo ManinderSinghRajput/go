@@ -2,20 +2,26 @@
 
 
 [[projects]]
+  name = "github.com/golang/snappy"
+  packages = ["."]
+  revision = "2a8bb927dd31d8daada140a5d09578521ce5c36a"
+  version = "v0.0.1"
+
+[[projects]]
   name = "github.com/gorilla/mux"
   packages = ["."]
   revision = "00bdffe0f3c77e27d2cf6f5c70232a2d3e4d9c15"
   version = "v1.7.3"
 
 [[projects]]
-  branch = "master"
-  name = "github.com/luciferdocker/go"
-  packages = ["codeDataBroker/httptransport","mylog"]
-  revision = "209da25b3cf6b8debf3416d67c2e5650d3cf1ef8"
+  name = "github.com/segmentio/kafka-go"
+  packages = [".","sasl","snappy"]
+  revision = "0b38267f13d5e17fcf8dfbb89168ef7fb520deb8"
+  version = "v0.2.5"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "b8747f429934093b6ee3e2347c8382fcf405549550e9029fd47c897da458b844"
+  inputs-digest = "8863267957c1875c13665415681211d7d524e93846c37372a97531ae11151ff0"
   solver-name = "gps-cdcl"
   solver-version = 1
