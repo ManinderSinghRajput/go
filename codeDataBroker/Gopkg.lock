@@ -14,6 +14,18 @@
   version = "v1.7.3"
 
 [[projects]]
+  name = "github.com/namsral/flag"
+  packages = ["."]
+  revision = "71ceffbeb0ba60fccc853971bb3ed4d7d90bfd04"
+  version = "v1.7.4-pre"
+
+[[projects]]
+  name = "github.com/rs/zerolog"
+  packages = [".","internal/cbor","internal/json","log"]
+  revision = "acf3980132bfcdc48638724e6e3d9e5749b85999"
+  version = "v1.14.3"
+
+[[projects]]
   name = "github.com/segmentio/kafka-go"
   packages = [".","sasl","snappy"]
   revision = "0b38267f13d5e17fcf8dfbb89168ef7fb520deb8"
@@ -22,6 +34,6 @@
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "8863267957c1875c13665415681211d7d524e93846c37372a97531ae11151ff0"
+  inputs-digest = "f17326e5d8b98e6ef2136b1a632db8239921d69e58bdd098952a1e61856af4f6"
   solver-name = "gps-cdcl"
   solver-version = 1

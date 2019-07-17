@@ -21,6 +21,14 @@ consumer:
 	rm -rf build/consumer
 	go build -a -o build/consumer ./cmd/consumer
 
+#MY_IP Variable used in docker-compose is mentioned in .env
+#Ip can be detched through command `ifconfig -a| grep -A1 enp0| grep inet | cut -d ' ' -f10`. TODO Automate this. Can be used like MY_IP=`<comamnd>` docker-compose up 
+kafkaCluster:
+	docker-compose up -d 
+
+kafkaClusterDown:
+	docker-compose down
+
 builddir:
 	if [ ! -d build ]; then mkdir build; fi
 
