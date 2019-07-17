@@ -10,12 +10,15 @@ build: builddir
 	go build -a -o build/broker ./cmd/broker
 
 producer:
+	rm -rf build/producer
 	go build -a -o build/producer ./cmd/producer
 
 broker:
+	rm -rf build/broker
 	go build -a -o build/broker ./cmd/broker
 
 consumer:
+	rm -rf build/consumer
 	go build -a -o build/consumer ./cmd/consumer
 
 builddir:
