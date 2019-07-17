@@ -1,8 +1,8 @@
 package main
 
 import (
-	log "github.com/luciferdocker/go/mylog"
-	"github.com/luciferdocker/go/codeDataBroker/httptransport"
+	log "myGitCode/mylog"
+	"myGitCode/codeDataBroker/httptransport"
 )
 
 func main() {
