@@ -1,12 +1,12 @@
 package httptransport
 
 import (
-	//"context"
+	"context"
 	"encoding/json"
+	"fmt"
 	"github.com/gorilla/mux"
-	//"go/types"
 	"math/rand"
-	//"myGitCode/codeDataBroker/kafka"
+	"myGitCode/codeDataBroker/kafka"
 	"net/http"
 	"strconv"
 
@@ -43,6 +43,7 @@ func ServeProducerApi(listenAddrApi string) error{
 	return nil
 }
 
+//Request Handlers
 
 func postDataToKafka(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
@@ -52,7 +53,7 @@ func postDataToKafka(w http.ResponseWriter, r *http.Request) {
 		post.ID = strconv.Itoa(rand.Intn(1000000))
 	}
 	posts = append(posts, post)
-	log.Debugf("Before: Message send is : %#v", post)
+	log.Debug(fmt.Sprintf("Before: Message send is : %#v", post))
 	_ = json.NewEncoder(w).Encode(&post)
 
 	message, err := json.Marshal(post)
@@ -62,10 +63,10 @@ func postDataToKafka(w http.ResponseWriter, r *http.Request) {
 
 	log.Info(string(message))
 
-	/*err = kafka.Push(context.Background(), nil, []byte(message))
+	err = kafka.Push(context.Background(), nil, []byte(message))
 	if err != nil{
 		log.Error("Failed to push data to kafka. " + err.Error())
-	}*/
+	}
 }
 
 /*func createPost(w http.ResponseWriter, r *http.Request) {

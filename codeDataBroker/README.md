@@ -17,6 +17,10 @@ Use kafkacat cli for standalone test of kafka cluster.
 ===============================================================================================================================
 First, open new terminal and type:
 
+To create new topic: `docker run --net=host --rm confluentinc/cp-kafka:5.0.0 kafka-topics --create --topic foo --partitions 4 --replication-factor 2 --if-not-exists --zookeeper localhost:32181`
+
+To get a list of topics: `docker run --net=host --rm confluentinc/cp-kafka:5.0.0 kafka-topics --list --zookeeper localhost:32181`
+
 Consumer: `kafkacat -C -b localhost:19092,localhost:29092,localhost:39092 -t foo -p 0`
 
 It will listen to topic “foo” in partition 0 (Kafka start the partition index from 0).

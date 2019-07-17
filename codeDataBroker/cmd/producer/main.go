@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"myGitCode/codeDataBroker/httptransport"
 	"myGitCode/codeDataBroker/kafka"
 	log "myGitCode/mylog"
@@ -30,6 +31,8 @@ func main() {
 
 	flag.Parse()
 
+	log.Debug(fmt.Sprintf("Equivalent command is: ./producer -listen-address %v -kafka-brokers %v -kafka-verbose %v -kafka-client-id %v -kafka-topic %v",listenAddrApi, kafkaBrokerUrl, kafkaVerbose, kafkaClientId, kafkaTopic))
+
 	// connect to kafka
 	kafkaProducer, err := kafka.Configure(strings.Split(kafkaBrokerUrl, ","), kafkaClientId, kafkaTopic)
 	if err != nil {
@@ -41,7 +44,7 @@ func main() {
 	var errChan = make(chan error, 1)
 
 	go func() {
-		log.Infof("starting server at %s", listenAddrApi)
+		log.Info(fmt.Sprintf("starting server at %s", listenAddrApi))
 		errChan <- startAndServeProducerApi(listenAddrApi)
 	}()
 
