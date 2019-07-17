@@ -1304,20 +1304,13 @@ func (r *Reader) Close() error {
 // If consumer groups are used, ReadMessage will automatically commit the
 // offset when called.
 func (r *Reader) ReadMessage(ctx context.Context) (Message, error) {
-	r.config.MinBytes = 10
-	fmt.Println("In ReadMessage")
-	fmt.Printf("%#v", r.config)
 	m, err := r.FetchMessage(ctx)
-	fmt.Println("After FetchMessage", m)
 	if err != nil {
-		fmt.Println("In error case of FetchMessage" + err.Error())
 		return Message{}, err
 	}
 
 	if r.useConsumerGroup() {
-		fmt.Println("In ConsumerGroup check")
 		if err := r.CommitMessages(ctx, m); err != nil {
-			fmt.Println("In CommitMessage error case" + err.Error())
 			return Message{}, err
 		}
 	}
@@ -1334,11 +1327,9 @@ func (r *Reader) ReadMessage(ctx context.Context) (Message, error) {
 // FetchMessage does not commit offsets automatically when using consumer groups.
 // Use CommitMessages to commit the offset.
 func (r *Reader) FetchMessage(ctx context.Context) (Message, error) {
-	fmt.Println("In FetchMessage")
 	r.activateReadLag()
 
 	for {
-		fmt.Println("In For Loop")
 		r.mutex.Lock()
 
 		if !r.closed && r.version == 0 {
