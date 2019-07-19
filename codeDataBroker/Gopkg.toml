@@ -22,9 +22,17 @@
 
 
 [[constraint]]
+  name = "github.com/Shopify/sarama"
+  version = "1.23.0"
+
+[[constraint]]
   name = "github.com/gorilla/mux"
   version = "1.7.3"
 
 [[constraint]]
-  name = "github.com/segmentio/kafka-go"
-  version = "0.2.5"
+  name = "github.com/namsral/flag"
+  version = "1.7.4-pre"
+
+[[constraint]]
+  name = "gopkg.in/bsm/sarama-cluster.v2"
+  version = "2.1.15"

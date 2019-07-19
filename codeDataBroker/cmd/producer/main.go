@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/Shopify/sarama"
 	"myGitCode/codeDataBroker/httptransport"
 	"myGitCode/codeDataBroker/kafka"
 	log "myGitCode/mylog"
@@ -34,7 +35,7 @@ func main() {
 	log.Debug(fmt.Sprintf("Equivalent command is: ./producer -listen-address %v -kafka-brokers %v -kafka-verbose %v -kafka-client-id %v -kafka-topic %v",listenAddrApi, kafkaBrokerUrl, kafkaVerbose, kafkaClientId, kafkaTopic))
 
 	// connect to kafka
-	kafkaProducer, err := kafka.Configure(strings.Split(kafkaBrokerUrl, ","), kafkaClientId, kafkaTopic)
+	kafkaProducer, err := kafka.ConfigureProducer(strings.Split(kafkaBrokerUrl, ","), kafkaClientId)
 	if err != nil {
 		log.Error("unable to configure kafka. " + err.Error())
 		return
@@ -45,7 +46,7 @@ func main() {
 
 	go func() {
 		log.Info(fmt.Sprintf("starting server at %s", listenAddrApi))
-		errChan <- startAndServeProducerApi(listenAddrApi)
+		errChan <- startAndServeProducerApi(listenAddrApi, kafkaProducer, kafkaTopic)
 	}()
 
 	var signalChan = make(chan os.Signal, 1)
@@ -61,9 +62,9 @@ func main() {
 	}
 }
 
-func startAndServeProducerApi(listenAddrApi string) error{
+func startAndServeProducerApi(listenAddrApi string, kafkaProducer sarama.SyncProducer, topic string ) error{
 
-	err := httptransport.ServeProducerApi(listenAddrApi)
+	err := httptransport.ServeProducerApi(listenAddrApi, kafkaProducer, topic)
 	if err != nil{
 		return err
 	}

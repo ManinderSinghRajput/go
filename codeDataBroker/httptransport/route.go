@@ -1,9 +1,9 @@
 package httptransport
 
 import (
-	"context"
 	"encoding/json"
 	"fmt"
+	"github.com/Shopify/sarama"
 	"github.com/gorilla/mux"
 	"math/rand"
 	"myGitCode/codeDataBroker/kafka"
@@ -21,7 +21,10 @@ type Post struct {
 	Body  string `json:"body"`
 }
 
-func ServeProducerApi(listenAddrApi string) error{
+var producer sarama.SyncProducer
+var producerTopic string
+
+func ServeProducerApi(listenAddrApi string, kafkaProducer sarama.SyncProducer, topic string) error{
 	//Creating new router
 	router := mux.NewRouter()
 
@@ -35,6 +38,8 @@ func ServeProducerApi(listenAddrApi string) error{
 	router.HandleFunc("/posts/{id}", updatePost).Methods("PUT")
 	router.HandleFunc("/posts/{id}", deletePost).Methods("DELETE")*/
 
+	producer = kafkaProducer
+	producerTopic = topic
 	log.Info("Starting serving Producer Api")
 	err := http.ListenAndServe(listenAddrApi, router)
 	if err != nil{
@@ -63,7 +68,7 @@ func postDataToKafka(w http.ResponseWriter, r *http.Request) {
 
 	log.Info(string(message))
 
-	err = kafka.Push(context.Background(), nil, []byte(message))
+	err = kafka.Push(string(message), producer, producerTopic)
 	if err != nil{
 		log.Error("Failed to push data to kafka. " + err.Error())
 	}

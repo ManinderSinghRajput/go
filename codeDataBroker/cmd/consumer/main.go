@@ -1,17 +1,15 @@
 package main
 
 import (
-	"context"
 	"fmt"
 	"os"
 	"os/signal"
 	"strings"
 	"syscall"
-	"time"
 
 	"github.com/namsral/flag"
-	"github.com/rs/zerolog/log"
-	"github.com/segmentio/kafka-go"
+	"myGitCode/codeDataBroker/kafka"
+	log "myGitCode/mylog"
 )
 
 var (
@@ -21,6 +19,7 @@ var (
 	kafkaTopic         string
 	kafkaConsumerGroup string
 	kafkaClientId      string
+	maxParallelMsg  *int
 )
 
 func main() {
@@ -29,37 +28,32 @@ func main() {
 	flag.StringVar(&kafkaTopic, "kafka-topic", "foo", "Kafka topic. Only one topic per worker.")
 	flag.StringVar(&kafkaConsumerGroup, "kafka-consumer-group", "consumer-group", "Kafka consumer group")
 	flag.StringVar(&kafkaClientId, "kafka-client-id", "my-client-id", "Kafka client id")
-
+	maxParallelMsg = flag.Int("maxRoutines", 100000, "Number max of messages read from kafka that can be treated in parallel.")
 	flag.Parse()
 
 	sigChan := make(chan os.Signal, 1)
 	signal.Notify(sigChan, syscall.SIGINT, syscall.SIGTERM)
 
 	brokers := strings.Split(kafkaBrokerUrl, ",")
+	topics := strings.Split(kafkaTopic, ",")
 
-	// make a new reader that consumes from topic-A
-	config := kafka.ReaderConfig{
-		Brokers:         brokers,
-		GroupID:         kafkaClientId,
-		Topic:           kafkaTopic,
-		MinBytes:        10e3,            // 10KB
-		MaxBytes:        10e6,            // 10MB
-		MaxWait:         1 * time.Second, // Maximum amount of time to wait for new data to come when fetching batches of messages from kafka.
-		ReadLagInterval: -1,
-	}
+	consumer := kafka.ConfigureConsumer(brokers, topics, "testGroup")
 
-	reader := kafka.NewReader(config)
-	defer reader.Close()
+	defer consumer.Close()
+	messages := kafka.Pull(consumer, *maxParallelMsg)
 
 	for {
-		m, err := reader.ReadMessage(context.Background())
-		if err != nil {
-			log.Error().Msgf("error while receiving message: %s", err.Error())
-			continue
+		select{
+		case msg := <-messages:
+			log.Info(fmt.Sprintf("Topic: %v, Partition: %v, Offset: %v, Message: %s", msg.Topic, msg.Partition, msg.Offset, msg.Value))
+		case <-sigChan:
+			log.Info(fmt.Sprintf("Stoping in progress...."))
 		}
 
-		value := m.Value
-
-		fmt.Printf("message at topic/partition/offset %v/%v/%v: %s\n", m.Topic, m.Partition, m.Offset, string(value))
 	}
+
+
+
+
+
 }
